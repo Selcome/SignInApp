@@ -28,3 +28,7 @@ proguard/
 *.iws
 .idea/
 /.settings
+/Debug
+/libs
+/obj
+/.cproject
