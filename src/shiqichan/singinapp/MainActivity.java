@@ -5,11 +5,16 @@ import android.app.Activity;
 import android.view.Menu;
 
 public class MainActivity extends Activity {
+	
+	PersonDetector detector;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		detector=new PersonDetector();
+		detector.hasPerson();
 	}
 
 	@Override
