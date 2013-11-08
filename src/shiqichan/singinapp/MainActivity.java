@@ -1,21 +1,14 @@
 package shiqichan.singinapp;
 
+import static shiqichan.singinapp.Config.*;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
 
-import static shiqichan.singinapp.Config.*;
+public class MainActivity extends Activity {
 
-public class MainActivity extends Activity implements
-		View.OnLayoutChangeListener {
-
-	
-
-	RelativeLayout rootView;
-	
 	SignInAppView appView;
 
 	@Override
@@ -25,27 +18,21 @@ public class MainActivity extends Activity implements
 				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		setContentView(R.layout.activity_main);
 
-		rootView = (RelativeLayout) findViewById(R.id.rootView);
-		rootView.addOnLayoutChangeListener(this);
-		
-
-		appView=new SignInAppView(this);
+		ViewGroup rootView = (ViewGroup) findViewById(R.id.rootView);
+		appView = new SignInAppView(this, rootView);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		appView.resume();
 		Log.d(TAG, "activity resume..");
 	}
-
+	
 	@Override
-	public void onLayoutChange(View v, int left, int top, int right,
-			int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-		v.removeOnLayoutChangeListener(this);
-		Log.d(TAG,
-				"layout change, width: " + v.getWidth() + ", height: "
-						+ v.getHeight());
-		appView.addToRootView(rootView);
+	protected void onPause() {
+		appView.pause();
+		super.onPause();
+		Log.d(TAG, "activity pause..");
 	}
-
 }

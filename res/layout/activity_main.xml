@@ -4,37 +4,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
-<!-- 
-    <shiqichan.singinapp.SignInAppView
-        android:id="@+id/appView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
- -->
-    <!--
-    <FrameLayout
-        android:id="@+id/targetLayout"
-        android:layout_width="800px"
-        android:layout_height="1200px"
-        android:layout_centerInParent="true"
-        android:background="#ffab0d" >
-
-        <SurfaceView
-            android:id="@+id/videoView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <ImageView
-                android:id="@+id/snapshotImageView"
-                android:layout_width="240px"
-                android:layout_height="360px"
-                android:layout_alignParentRight="true" 
-                />
-        </RelativeLayout>
-    </FrameLayout>
-    -->
-
+    
 </RelativeLayout>

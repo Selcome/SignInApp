@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     shiqichan_singinapp_PersonDetector
  * Method:    detect
- * Signature: ()I
+ * Signature: ([BII)I
  */
 JNIEXPORT jint JNICALL Java_shiqichan_singinapp_PersonDetector_detect
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject, jbyteArray, jint, jint);
 
 #ifdef __cplusplus
 }
