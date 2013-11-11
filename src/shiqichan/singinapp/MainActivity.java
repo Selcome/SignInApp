@@ -18,8 +18,8 @@ public class MainActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		setContentView(R.layout.activity_main);
 
-		ViewGroup rootView = (ViewGroup) findViewById(R.id.rootView);
-		appView = new SignInAppView(this, rootView);
+//		ViewGroup rootView = (ViewGroup) findViewById(R.id.rootView);
+//		appView = new SignInAppView(this, rootView);
 	}
 
 	@Override
