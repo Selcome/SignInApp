@@ -92,7 +92,7 @@ public class SignInAppView extends FrameLayout implements
 		}
 
 		currentSize = size;
-		detector.setPreviewSize(size.height, size.width);//因为是竖版的
+		detector.setPreviewSize(size.height, size.width);// 因为是竖版的
 		camera.release();
 
 		// Log.d(TAG, "currentSize, w: " + currentSize.width + ", h: "
@@ -178,10 +178,18 @@ public class SignInAppView extends FrameLayout implements
 
 		videoView = new VideoView(getContext());
 		videoView.getHolder().addCallback(this);
-		addView(videoView);
 
-		Log.d(TAG, "videoView-->>w,h: " + videoView.getWidth() + ", "
-				+ videoView.getHeight());
+		if (rootView.getHeight() != currentSize.width) {
+			//如果长宽不匹配preview尺寸，将有一部分高度（底部）不显示，比如xoom
+			// params=new LayoutParams(800,1422);
+			float currentHeight = currentSize.width * rootView.getWidth()
+					/ currentSize.height;
+//			Log.d(TAG, "current height: " + currentHeight);
+			params = new LayoutParams(rootView.getWidth(), (int) currentHeight);
+			addView(videoView, params);
+		} else {
+			addView(videoView);
+		}
 	}
 
 	class VideoView extends SurfaceView {
