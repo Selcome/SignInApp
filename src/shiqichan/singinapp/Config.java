@@ -6,7 +6,7 @@ public abstract class Config {
 
 	static final int CAMERA_NO = 1;
 	
-	static final long DELAY_START_CHECK=5000;
+	static final long DELAY_START_CHECK=1000;
 	
 	static final long DELAY_INTERVAL_CHECK=1000;
 }

@@ -39,6 +39,8 @@ public class SignInAppView extends FrameLayout implements
 
 	Window window;
 
+	boolean cameraOpened;
+
 	public SignInAppView(Context context, ViewGroup rootView) {
 		super(context);
 
@@ -63,7 +65,7 @@ public class SignInAppView extends FrameLayout implements
 	}
 
 	private void computeVideoSize(View rootView) {
-		Camera camera = Camera.open(CAMERA_NO);
+		camera = Camera.open(CAMERA_NO);
 		camera.setDisplayOrientation(90);
 
 		Camera.Parameters parameters = camera.getParameters();
@@ -93,10 +95,9 @@ public class SignInAppView extends FrameLayout implements
 
 		currentSize = size;
 		detector.setPreviewSize(size.height, size.width);// 因为是竖版的
-		camera.release();
+		// camera.release();
 
-		// Log.d(TAG, "currentSize, w: " + currentSize.width + ", h: "
-		// + currentSize.height);
+		cameraOpened = true;
 	}
 
 	@Override
@@ -151,13 +152,18 @@ public class SignInAppView extends FrameLayout implements
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		camera = Camera.open(CAMERA_NO);
-		Log.d(TAG, "surface create.");
+		Log.d(TAG, "surface create..");
+		if (!cameraOpened) {
+			camera = Camera.open(CAMERA_NO);
+			cameraOpened = true;
+		}
+
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		camera.release();
+		cameraOpened=false;
 		Log.d(TAG, "surface destroyed.");
 	}
 
@@ -180,11 +186,11 @@ public class SignInAppView extends FrameLayout implements
 		videoView.getHolder().addCallback(this);
 
 		if (rootView.getHeight() != currentSize.width) {
-			//如果长宽不匹配preview尺寸，将有一部分高度（底部）不显示，比如xoom
+			// 如果长宽不匹配preview尺寸，将有一部分高度（底部）不显示，比如xoom
 			// params=new LayoutParams(800,1422);
 			float currentHeight = currentSize.width * rootView.getWidth()
 					/ currentSize.height;
-//			Log.d(TAG, "current height: " + currentHeight);
+			// Log.d(TAG, "current height: " + currentHeight);
 			params = new LayoutParams(rootView.getWidth(), (int) currentHeight);
 			addView(videoView, params);
 		} else {
@@ -207,6 +213,7 @@ public class SignInAppView extends FrameLayout implements
 
 		@Override
 		public void run() {
+			Log.d(TAG, "looper thread run ..");
 			running = true;
 			Looper.prepare();
 			mHandler = new Handler();
