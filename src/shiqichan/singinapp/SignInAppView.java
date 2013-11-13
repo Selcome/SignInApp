@@ -8,8 +8,10 @@ import static shiqichan.singinapp.Utils.openOrCloseScreen;
 
 import java.io.IOException;
 
+import shiqichan.singinapp.PersonDetector.SampleFinishedCallback;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
@@ -23,9 +25,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 public class SignInAppView extends FrameLayout implements
-		SurfaceHolder.Callback, View.OnLayoutChangeListener, PreviewCallback {
+		SurfaceHolder.Callback, View.OnLayoutChangeListener, PreviewCallback,
+		SampleFinishedCallback {
 
 	LooperThread looperThread;// 用于检查镜头数据，是否开启屏幕（有人的时候），开启屏幕后间隔抽取图像
 
@@ -41,12 +45,15 @@ public class SignInAppView extends FrameLayout implements
 
 	boolean cameraOpened;
 
+	ImageView snapImageView;
+
 	public SignInAppView(Context context, ViewGroup rootView) {
 		super(context);
 
 		detector = new PersonDetector();
-		rootView.addOnLayoutChangeListener(this);// 当外部视图布局完毕后再加载
+		detector.setSampleFinishedCallback(this);
 
+		rootView.addOnLayoutChangeListener(this);// 当外部视图布局完毕后再加载
 		window = ((Activity) context).getWindow();
 	}
 
@@ -62,6 +69,7 @@ public class SignInAppView extends FrameLayout implements
 				Looper.myLooper().quit();
 			}
 		});
+		detector.clear();
 	}
 
 	private void computeVideoSize(View rootView) {
@@ -94,7 +102,7 @@ public class SignInAppView extends FrameLayout implements
 		}
 
 		currentSize = size;
-		detector.setPreviewSize(size.height, size.width);// 因为是竖版的
+		detector.setPreviewSize(size);
 		// camera.release();
 
 		cameraOpened = true;
@@ -163,7 +171,7 @@ public class SignInAppView extends FrameLayout implements
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		camera.release();
-		cameraOpened=false;
+		cameraOpened = false;
 		Log.d(TAG, "surface destroyed.");
 	}
 
@@ -196,6 +204,9 @@ public class SignInAppView extends FrameLayout implements
 		} else {
 			addView(videoView);
 		}
+
+		snapImageView = new ImageView(getContext());
+		addView(snapImageView);
 	}
 
 	class VideoView extends SurfaceView {
@@ -227,7 +238,24 @@ public class SignInAppView extends FrameLayout implements
 		Size size = camera.getParameters().getPreviewSize();
 		detector.setData(data);
 
-		openOrCloseScreen(window, detector.hasPerson());
+		boolean hasPerson = detector.hasPerson();
+		openOrCloseScreen(window, hasPerson);
+		if (!hasPerson) {
+			detector.clear();
+		}
+	}
+
+	@Override
+	public void callback(Bitmap bestImage) {
+		Log.d(TAG, "--->>get best iamge(w,h): " + bestImage.getWidth() + ", "
+				+ bestImage.getHeight());
+		snapImageView.setImageBitmap(bestImage);
+
+	}
+
+	@Override
+	public void clear() {
+		snapImageView.setImageBitmap(null);
 	}
 
 }
