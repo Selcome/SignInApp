@@ -6,16 +6,24 @@ import static shiqichan.singinapp.Config.DELAY_START_CHECK;
 import static shiqichan.singinapp.Config.TAG;
 import static shiqichan.singinapp.Utils.openOrCloseScreen;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 import shiqichan.singinapp.PersonDetector.SampleFinishedCallback;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
+import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -45,7 +53,7 @@ public class SignInAppView extends FrameLayout implements
 
 	boolean cameraOpened;
 
-	ImageView snapImageView;
+//	ImageView snapImageView;
 
 	public SignInAppView(Context context, ViewGroup rootView) {
 		super(context);
@@ -205,8 +213,8 @@ public class SignInAppView extends FrameLayout implements
 			addView(videoView);
 		}
 
-		snapImageView = new ImageView(getContext());
-		addView(snapImageView);
+//		snapImageView = new ImageView(getContext());
+//		addView(snapImageView);
 	}
 
 	class VideoView extends SurfaceView {
@@ -247,15 +255,37 @@ public class SignInAppView extends FrameLayout implements
 
 	@Override
 	public void callback(Bitmap bestImage) {
-		Log.d(TAG, "--->>get best iamge(w,h): " + bestImage.getWidth() + ", "
+		Log.e(TAG, "--->>get best iamge(w,h): " + bestImage.getWidth() + ", "
 				+ bestImage.getHeight());
-		snapImageView.setImageBitmap(bestImage);
-
+//		snapImageView.setImageBitmap(bestImage);
+		String fileName= Environment.getExternalStorageDirectory()+"/qiandao/" + new Date().getTime() + ".png";
+		Log.d(TAG, "imgeFilePath-->"+fileName);
+		try {
+			saveBitmap(bestImage,fileName);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Intent intent = new Intent(window.getContext(), PersonActivty.class);
+		intent.putExtra("fileImagePath", fileName);
+        window.getContext().startActivity(intent);
 	}
-
+	
+	public void saveBitmap(Bitmap mBitmap,String fileName) throws IOException {
+      
+		File dirFile = new File(Environment.getExternalStorageDirectory()+"/qiandao/");  
+        if(!dirFile.exists()){  
+            dirFile.mkdir();  
+        }
+        File myCaptureFile = new File(fileName);  
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));  
+        mBitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos);  
+        bos.flush();  
+        bos.close();  
+}
 	@Override
 	public void clear() {
-		snapImageView.setImageBitmap(null);
+//		snapImageView.setImageBitmap(null);
 	}
 
 }
